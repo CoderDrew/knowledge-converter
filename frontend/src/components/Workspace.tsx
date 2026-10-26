@@ -1,6 +1,7 @@
 "use client";
 
 import { DEMO_MODE } from "@/lib/api";
+import { rovingKeyDown } from "@/lib/roving";
 import { useEffect, useMemo, useState } from "react";
 import { urls, type Conversion, type ProfileId } from "@/lib/api";
 import { formatBytes, formatSeconds, plural } from "@/lib/format";
@@ -56,7 +57,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
                 <span className="shrink-0">· {formatBytes(source.size_bytes)}</span>
               </span>
             </div>
-            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-balance break-words sm:text-[2rem] sm:leading-tight">{conversion.title}</h1>
+            <h1 className="mt-3 text-2xl text-balance break-words sm:text-[2rem] sm:leading-tight">{conversion.title}</h1>
             <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
               {statItems.map(([label, value]) => (
                 <div key={label} className="flex items-baseline gap-1.5">
@@ -82,7 +83,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
               className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-ink transition"
             >
               <ArchiveIcon size={16} /> Download ZIP
-              <span className="font-normal opacity-80">{formatBytes(profile.package_bytes)}</span>
+              <span className="font-normal">{formatBytes(profile.package_bytes)}</span>
             </a>
           </div>
         </div>
@@ -98,9 +99,14 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
               return (
                 <button
                   key={p.id}
+                  id={`profile-${p.id}`}
                   role="radio"
                   aria-checked={active}
+                  tabIndex={active ? 0 : -1}
                   onClick={() => setProfileId(p.id)}
+                  onKeyDown={(e) =>
+                    rovingKeyDown(e, conversion.profiles.map((x) => x.id), profile.id, setProfileId, (id) => `profile-${id}`)
+                  }
                   className={`flex flex-col items-stretch justify-start rounded-[var(--mj-radius-md)] border p-4 text-left transition-all duration-200 ${
                     active ? "border-accent bg-accent-soft/70 ring-1 ring-accent" : "border-line bg-surface-2 hover:border-line-strong"
                   }`}
@@ -135,7 +141,9 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
                 id={`tab-${tab.id}`}
                 aria-selected={view === tab.id}
                 aria-controls={`panel-${tab.id}`}
+                tabIndex={view === tab.id ? 0 : -1}
                 onClick={() => setView(tab.id)}
+                onKeyDown={(e) => rovingKeyDown(e, tabs.map((t) => t.id), view, setView, (id) => `tab-${id}`, "horizontal")}
                 className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
                   view === tab.id ? "bg-ink text-paper" : "text-ink-2 hover:bg-surface-2"
                 }`}
@@ -148,7 +156,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
               </button>
             ))}
           </div>
-          <div role="tabpanel" id={`panel-${view}`} aria-labelledby={`tab-${view}`}>
+          <div role="tabpanel" id={`panel-${view}`} aria-labelledby={`tab-${view}`} tabIndex={0}>
             {view === "preview" && <PreviewPane conversionId={conversion.id} profileId={profile.id} title={conversion.title} />}
             {view === "html" && <HtmlPane conversionId={conversion.id} profile={profile} />}
             {view === "assets" && <AssetsPane conversion={conversion} profileId={profile.id} />}

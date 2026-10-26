@@ -38,7 +38,7 @@ export function DemoSamples({ onLoaded }: { onLoaded: (conversion: Conversion) =
 
   return (
     <div className="rounded-[var(--mj-radius-md)] border border-line bg-surface p-6 sm:p-8">
-      <h2 className="text-lg font-semibold tracking-tight">Try it with a sample file</h2>
+      <h2 className="text-[1.375rem] leading-[1.875rem] text-ink">Try it with a sample file</h2>
       <p className="mt-2 text-sm leading-relaxed text-ink-2">
         This public demo shows real converter output for two synthetic sample files. Uploads are turned off here, so nothing you
         own is sent anywhere.
@@ -51,7 +51,7 @@ export function DemoSamples({ onLoaded }: { onLoaded: (conversion: Conversion) =
               onClick={() => open(s.id)}
               disabled={busy !== null}
               aria-busy={busy === s.id}
-              className="flex w-full items-center gap-3 rounded-xl border border-line-strong bg-paper px-4 py-3 text-left transition hover:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60"
+              className="flex w-full items-center gap-3 rounded-xl border border-line-strong bg-paper px-4 py-3 text-left transition hover:border-ink disabled:opacity-60"
             >
               <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-surface-2 text-ink-2" aria-hidden="true">
                 {s.kind === "pptx" ? <SlidesIcon size={18} /> : <DocIcon size={18} />}

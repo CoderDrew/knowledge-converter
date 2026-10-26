@@ -1,3 +1,4 @@
+import { DEMO_MODE } from "@/lib/api";
 import { CodeIcon, DocIcon, ImageIcon, ShieldIcon, SlidesIcon, SparkIcon } from "./icons";
 
 export function HeroCopy() {
@@ -8,8 +9,9 @@ export function HeroCopy() {
         Convert Word and PowerPoint to clean HTML
       </h1>
       <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-2 text-pretty">
-        Drop a .docx or .pptx and get publish-ready semantic HTML, every embedded image, and a portable export package —
-        without copy-paste cleanup.
+        {DEMO_MODE
+          ? "See what the converter makes from a Word or PowerPoint file: publish-ready semantic HTML, every embedded image, and a portable export package. This demo shows two synthetic samples."
+          : "Drop a .docx or .pptx and get publish-ready semantic HTML, every embedded image, and a portable export package — without copy-paste cleanup."}
       </p>
       <ConversionRail />
     </div>
@@ -81,11 +83,18 @@ export function HowItWorks() {
               Three steps from file to HTML
             </h2>
             <ol className="mt-8 space-y-4 text-[15px] text-ink-2">
-              {[
-                "Upload a Word or PowerPoint file.",
-                "An isolated worker validates, parses and renders it.",
-                "Review the preview, inspect the HTML, download the package.",
-              ].map((step, index) => (
+              {(DEMO_MODE
+                ? [
+                    "Pick one of the two sample files.",
+                    "See the output the converter produced for it.",
+                    "Review the preview, inspect the HTML, download the package.",
+                  ]
+                : [
+                    "Upload a Word or PowerPoint file.",
+                    "An isolated worker validates, parses and renders it.",
+                    "Review the preview, inspect the HTML, download the package.",
+                  ]
+              ).map((step, index) => (
                 <li key={step} className="flex gap-3">
                   <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ink text-xs font-semibold text-paper">{index + 1}</span>
                   <span className="pt-0.5">{step}</span>
@@ -113,7 +122,11 @@ export function Footer() {
     <footer className="border-t border-line">
       <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <p>© 2026 Mindjax</p>
-        <p>No accounts, no tracking. Uploaded files are deleted after conversion; results expire automatically.</p>
+        <p>
+          {DEMO_MODE
+            ? "No accounts, no tracking. This demo shows pre-rendered samples; no files are uploaded."
+            : "No accounts, no tracking. Uploaded files are deleted after conversion; results expire automatically."}
+        </p>
       </div>
     </footer>
   );
