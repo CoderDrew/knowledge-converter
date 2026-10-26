@@ -104,3 +104,5 @@ The web app reads `NEXT_PUBLIC_API_BASE_URL` (default `http://127.0.0.1:8000`).
 
 * The header mark is a placeholder; swap in the official Mindjax logo before showcasing.
 * Results are kept only in a temporary directory and are deleted on expiry, on request, and whenever the API starts or stops.
+
+* Live deployment enabled.
