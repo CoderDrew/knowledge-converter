@@ -16,7 +16,7 @@ jobs:
       - name: Check out approved commit
         uses: actions/checkout@v4
         with:
-          ref: 2ea6cd0
+          ref: 2ea6cd00f8f190ca3dfec22f6ec23603e0304d60
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
