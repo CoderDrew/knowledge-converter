@@ -63,4 +63,4 @@ jobs:
             -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             "$USER@$HOST" \
-            'sudo -n /usr/local/sbin/mindjax-deploy-knowledge-converter 2ea6cd0'
+            'whoami; sudo -n -l'
