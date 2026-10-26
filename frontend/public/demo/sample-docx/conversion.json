@@ -1,0 +1,98 @@
+{
+ "title": "Submitting an Expense Report",
+ "source": {
+  "name": "sample-expense-guide.docx",
+  "kind": "docx",
+  "size_bytes": 43112
+ },
+ "stats": {
+  "headings": 3,
+  "paragraphs": 4,
+  "lists": 4,
+  "list_items": 5,
+  "tables": 1,
+  "images": 1,
+  "slides": 0,
+  "words": 84
+ },
+ "outline": [
+  {
+   "level": 1,
+   "text": "Submitting an Expense Report"
+  },
+  {
+   "level": 2,
+   "text": "Create the report"
+  },
+  {
+   "level": 2,
+   "text": "What to check"
+  }
+ ],
+ "warnings": [],
+ "assets": [
+  {
+   "filename": "image-001.png",
+   "content_type": "image/png",
+   "width": 960,
+   "height": 540,
+   "size_bytes": 9037,
+   "alt": null,
+   "slide": null,
+   "context": "Create the report",
+   "occurrences": 1,
+   "displayable": true
+  }
+ ],
+ "profiles": [
+  {
+   "id": "clean",
+   "name": "Clean HTML",
+   "summary": "Semantic, style-free markup in one self-contained file. Ideal for websites and CMS editors.",
+   "html_filename": "document.html",
+   "html_bytes": 13352,
+   "package_bytes": 15191,
+   "files": [
+    "assets/image-001.png",
+    "document.html",
+    "manifest.json"
+   ]
+  },
+  {
+   "id": "assets",
+   "name": "HTML + Assets",
+   "summary": "A styled, portable page with extracted images and CSS in an organised assets folder.",
+   "html_filename": "index.html",
+   "html_bytes": 1429,
+   "package_bytes": 9222,
+   "files": [
+    "assets/images/image-001.png",
+    "assets/styles.css",
+    "index.html",
+    "manifest.json"
+   ]
+  },
+  {
+   "id": "freshservice",
+   "name": "Freshservice Article",
+   "summary": "Knowledge-base article markup with an image manifest and conversion report, matching the original FS converter.",
+   "html_filename": "article.html",
+   "html_bytes": 1866,
+   "package_bytes": 8896,
+   "files": [
+    "article.html",
+    "conversion-report.html",
+    "images/image-001.png",
+    "manifest.json"
+   ]
+  }
+ ],
+ "timings_ms": {
+  "validate": 22,
+  "parse": 36,
+  "render": 15,
+  "total": 73
+ },
+ "id": "sample-docx",
+ "expires_at": "2099-01-01T00:00:00Z"
+}

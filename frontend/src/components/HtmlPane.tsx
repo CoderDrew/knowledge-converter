@@ -54,30 +54,30 @@ export function HtmlPane({ conversionId, profile }: { conversionId: string; prof
   };
 
   return (
-    <div className="overflow-hidden rounded-[18px] border border-line bg-code-bg text-code-ink shadow-card">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-2.5">
-        <div className="flex min-w-0 items-center gap-3 font-mono text-xs">
-          <span className="rounded-md bg-white/10 px-2 py-1 font-semibold">{profile.html_filename}</span>
-          <span className="text-white/50">{formatBytes(profile.html_bytes)}</span>
-          {display && <span className="hidden text-white/50 sm:inline">{display.lines.toLocaleString()} lines</span>}
+    <div className="overflow-hidden rounded-[var(--mj-radius-md)] border border-line bg-code-bg text-code-ink">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface px-4 py-2.5">
+        <div className="flex min-w-0 items-center gap-3 text-xs">
+          <span className="rounded-[var(--mj-radius-sm)] bg-surface-2 px-2 py-1 font-semibold text-ink">{profile.html_filename}</span>
+          <span className="text-muted">{formatBytes(profile.html_bytes)}</span>
+          {display && <span className="hidden text-muted sm:inline">{display.lines.toLocaleString()} lines</span>}
         </div>
         <button
           onClick={copy}
           disabled={current === null}
-          className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold transition hover:bg-white/20 disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface px-3 py-1.5 text-xs font-semibold text-ink transition hover:bg-accent-soft disabled:opacity-40"
         >
           {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
           {copied ? "Copied" : "Copy HTML"}
         </button>
       </div>
       {display && display.elided > 0 && (
-        <p className="border-b border-white/10 bg-white/[0.03] px-4 py-2 text-xs text-white/60">
+        <p className="border-b border-line bg-surface px-4 py-2 text-xs text-muted">
           {display.elided} embedded image{display.elided === 1 ? " is" : "s are"} shortened for readability. Copy and download include the complete markup.
         </p>
       )}
       <div className="code-view max-h-[68vh] min-h-[420px] overflow-auto">
-        {error && <p className="p-5 text-sm text-red-300">{error}</p>}
-        {!error && display === null && <p className="p-5 font-mono text-sm text-white/50">Loading markup…</p>}
+        {error && <p className="p-5 text-sm text-danger">{error}</p>}
+        {!error && display === null && <p className="p-5 text-sm text-muted">Loading markup…</p>}
         {display && (
           <pre className="p-5 font-mono text-[12.5px] leading-[1.7] whitespace-pre-wrap break-words">
             {display.markup !== null ? <code dangerouslySetInnerHTML={{ __html: display.markup }} /> : <code>{display.text}</code>}

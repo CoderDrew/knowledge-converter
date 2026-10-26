@@ -1,5 +1,7 @@
 "use client";
 
+import { DEMO_MODE } from "@/lib/api";
+import { rovingKeyDown } from "@/lib/roving";
 import { useEffect, useMemo, useState } from "react";
 import { urls, type Conversion, type ProfileId } from "@/lib/api";
 import { formatBytes, formatSeconds, plural } from "@/lib/format";
@@ -42,7 +44,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
         <ExpiryBadge expiresAt={conversion.expires_at} onDiscard={onDiscard} />
       </div>
 
-      <section className="animate-rise animate-rise-delay-1 mt-4 rounded-[22px] border border-line bg-surface p-5 shadow-card sm:p-7">
+      <section className="animate-rise animate-rise-delay-1 mt-4 rounded-[var(--mj-radius-md)] border border-line bg-surface p-5 sm:p-7">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
             <div className="flex items-center gap-2 text-sm text-muted">
@@ -55,7 +57,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
                 <span className="shrink-0">· {formatBytes(source.size_bytes)}</span>
               </span>
             </div>
-            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-balance break-words sm:text-[2rem] sm:leading-tight">{conversion.title}</h1>
+            <h1 className="mt-3 text-2xl text-balance break-words sm:text-[2rem] sm:leading-tight">{conversion.title}</h1>
             <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
               {statItems.map(([label, value]) => (
                 <div key={label} className="flex items-baseline gap-1.5">
@@ -69,24 +71,26 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
           <div className="flex flex-wrap gap-2 lg:justify-end">
             <a
               href={urls.html(conversion.id, profile.id)}
-              className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface px-4 py-2.5 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-ink"
+              download={DEMO_MODE ? profile.html_filename : undefined}
+              className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface px-4 py-2.5 text-sm font-semibold transition hover:border-ink"
             >
               <DownloadIcon size={16} /> {profile.html_filename}
               <span className="font-normal text-muted">{formatBytes(profile.html_bytes)}</span>
             </a>
             <a
               href={urls.package(conversion.id, profile.id)}
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-ink shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+              download={DEMO_MODE ? `${conversion.id}-${profile.id}.zip` : undefined}
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-ink transition"
             >
               <ArchiveIcon size={16} /> Download ZIP
-              <span className="font-normal opacity-80">{formatBytes(profile.package_bytes)}</span>
+              <span className="font-normal">{formatBytes(profile.package_bytes)}</span>
             </a>
           </div>
         </div>
 
         {/* profile switcher */}
         <div className="mt-6 border-t border-line pt-5">
-          <p className="mb-3 font-mono text-[11px] font-semibold tracking-[0.16em] text-muted uppercase" id="profile-label">
+          <p className="mb-3 font-display text-xs tracking-[var(--mj-tracking-eyebrow)] text-muted uppercase" id="profile-label">
             Output profile
           </p>
           <div className="grid gap-2 sm:grid-cols-3" role="radiogroup" aria-labelledby="profile-label">
@@ -95,10 +99,15 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
               return (
                 <button
                   key={p.id}
+                  id={`profile-${p.id}`}
                   role="radio"
                   aria-checked={active}
+                  tabIndex={active ? 0 : -1}
                   onClick={() => setProfileId(p.id)}
-                  className={`flex flex-col items-stretch justify-start rounded-2xl border p-4 text-left transition-all duration-200 ${
+                  onKeyDown={(e) =>
+                    rovingKeyDown(e, conversion.profiles.map((x) => x.id), profile.id, setProfileId, (id) => `profile-${id}`)
+                  }
+                  className={`flex flex-col items-stretch justify-start rounded-[var(--mj-radius-md)] border p-4 text-left transition-all duration-200 ${
                     active ? "border-accent bg-accent-soft/70 ring-1 ring-accent" : "border-line bg-surface-2 hover:border-line-strong"
                   }`}
                 >
@@ -132,7 +141,9 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
                 id={`tab-${tab.id}`}
                 aria-selected={view === tab.id}
                 aria-controls={`panel-${tab.id}`}
+                tabIndex={view === tab.id ? 0 : -1}
                 onClick={() => setView(tab.id)}
+                onKeyDown={(e) => rovingKeyDown(e, tabs.map((t) => t.id), view, setView, (id) => `tab-${id}`, "horizontal")}
                 className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
                   view === tab.id ? "bg-ink text-paper" : "text-ink-2 hover:bg-surface-2"
                 }`}
@@ -145,7 +156,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
               </button>
             ))}
           </div>
-          <div role="tabpanel" id={`panel-${view}`} aria-labelledby={`tab-${view}`}>
+          <div role="tabpanel" id={`panel-${view}`} aria-labelledby={`tab-${view}`} tabIndex={0}>
             {view === "preview" && <PreviewPane conversionId={conversion.id} profileId={profile.id} title={conversion.title} />}
             {view === "html" && <HtmlPane conversionId={conversion.id} profile={profile} />}
             {view === "assets" && <AssetsPane conversion={conversion} profileId={profile.id} />}
@@ -158,8 +169,8 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
 
 function Outline({ conversion }: { conversion: Conversion }) {
   return (
-    <div className="sticky top-24 rounded-2xl border border-line bg-surface p-4">
-      <p className="font-mono text-[11px] font-semibold tracking-[0.16em] text-muted uppercase">
+    <div className="sticky top-24 rounded-[var(--mj-radius-md)] border border-line bg-surface p-4">
+      <p className="font-display text-xs tracking-[var(--mj-tracking-eyebrow)] text-muted uppercase">
         {conversion.source.kind === "pptx" ? "Slides" : "Structure"}
       </p>
       {conversion.outline.length === 0 ? (
@@ -172,7 +183,7 @@ function Outline({ conversion }: { conversion: Conversion }) {
               className="flex gap-2 rounded-lg px-2 py-1.5 text-ink-2"
               style={{ paddingLeft: `${0.5 + Math.max(0, item.level - (conversion.source.kind === "pptx" ? 2 : 1)) * 0.85}rem` }}
             >
-              {item.label && <span className="shrink-0 font-mono text-[11px] leading-5 text-muted">{item.label.replace("Slide ", "")}</span>}
+              {item.label && <span className="shrink-0 text-xs leading-5 text-muted">{item.label.replace("Slide ", "")}</span>}
               <span className="line-clamp-2">{item.text}</span>
             </li>
           ))}
@@ -185,7 +196,7 @@ function Outline({ conversion }: { conversion: Conversion }) {
 function Notes({ warnings }: { warnings: string[] }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="animate-rise animate-rise-delay-2 mt-4 rounded-2xl border border-warn/25 bg-warn-soft px-4 py-3 text-sm sm:px-5">
+    <div className="animate-rise animate-rise-delay-2 mt-4 rounded-[var(--mj-radius-md)] border border-warn/25 bg-warn-soft px-4 py-3 text-sm sm:px-5">
       <button onClick={() => setOpen((v) => !v)} aria-expanded={open} className="flex w-full items-center gap-3 text-left">
         <AlertIcon size={17} className="shrink-0 text-warn" />
         <span className="flex-1 font-semibold">
@@ -218,13 +229,17 @@ function ExpiryBadge({ expiresAt, onDiscard }: { expiresAt: string; onDiscard: (
     <div className="flex items-center gap-2 text-sm">
       <span className="inline-flex items-center gap-1.5 text-muted">
         <ClockIcon size={15} />
-        {minutes > 0 ? `Results auto-delete in ${plural(minutes, "minute")}` : "Results have expired"}
+        {DEMO_MODE
+          ? "Pre-rendered sample · nothing is stored"
+          : minutes > 0
+            ? `Results auto-delete in ${plural(minutes, "minute")}`
+            : "Results have expired"}
       </span>
       <button
         onClick={onDiscard}
         className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-semibold text-ink-2 transition hover:border-danger hover:text-danger"
       >
-        <TrashIcon size={14} /> Delete now
+        {DEMO_MODE ? "Close sample" : <><TrashIcon size={14} /> Delete now</>}
       </button>
     </div>
   );

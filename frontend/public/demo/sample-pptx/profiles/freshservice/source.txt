@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Submitting an Expense Report</title>
+<style>body{font-family:Arial,sans-serif;line-height:1.55;color:#172b4d;max-width:900px;margin:32px auto;padding:0 24px}h1,h2,h3{color:#12344d}img{display:block;max-width:100%;height:auto;margin:18px 0;border:1px solid #dfe3e8;border-radius:6px}table{border-collapse:collapse;width:100%;margin:18px 0}th,td{border:1px solid #cfd7df;padding:9px;text-align:left;vertical-align:top}th{background:#f2f5f7}.callout{padding:12px 16px;border-left:4px solid #2c5cc5;background:#f2f7ff}.warning,.caution{border-color:#d82c0d;background:#fff4f2}.tip{border-color:#00a886;background:#effffb}.conversion-warning{color:#b42318}.speaker-notes{color:#5e6c84;font-size:.92em}</style>
+</head><body><h1>Submitting an Expense Report</h1>
+<section id="slide-1">
+<h2>Submitting an Expense Report</h2>
+<p>Example Co. training (synthetic sample)</p>
+</section>
+<section id="slide-2">
+<h2>Create the report</h2>
+<ul><li>Open the Expenses workspace<ul><li>Choose cost centre CC-1000</li></ul></li><li>Attach receipts and submit</li></ul>
+<aside class="speaker-notes"><h3>Speaker notes</h3><p>Mention that drafts are saved automatically.</p></aside>
+</section>
+<section id="slide-3">
+<h2>The Expenses screen</h2>
+<p><img src="images/slide-003-image-01.png" alt="sample-screenshot.png" data-source-image="1"></p>
+</section>
+<section id="slide-4">
+<h2>What to check</h2>
+<table><thead><tr><th>Field</th><th>Expected value</th></tr></thead><tbody><tr><td>Total</td><td>245.00</td></tr><tr><td>Status</td><td>Submitted</td></tr></tbody></table>
+</section></body></html>

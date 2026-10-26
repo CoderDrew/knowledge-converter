@@ -5,7 +5,8 @@ import { Header, type EngineStatus } from "@/components/Header";
 import { Intake, type IntakePhase } from "@/components/Intake";
 import { Footer, HeroCopy, HowItWorks } from "@/components/Landing";
 import { Workspace } from "@/components/Workspace";
-import { ApiError, deleteConversion, getHealth, uploadForConversion, type Conversion } from "@/lib/api";
+import { DemoSamples } from "@/components/DemoSamples";
+import { ApiError, DEMO_MODE, deleteConversion, getHealth, uploadForConversion, type Conversion } from "@/lib/api";
 import { validateFile } from "@/lib/format";
 
 const DEFAULT_MAX_BYTES = 20 * 1024 * 1024;
@@ -21,7 +22,7 @@ export default function Home() {
     try {
       const health = await getHealth();
       setMaxBytes(health.limits.max_upload_bytes);
-      setEngine("online");
+      setEngine(DEMO_MODE ? "demo" : "online");
     } catch {
       setEngine("offline");
     }
@@ -29,6 +30,7 @@ export default function Home() {
 
   useEffect(() => {
     checkEngine();
+    if (DEMO_MODE) return;
     const timer = window.setInterval(checkEngine, 15_000);
     return () => window.clearInterval(timer);
   }, [checkEngine]);
@@ -90,6 +92,14 @@ export default function Home() {
               <div className="relative mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-12 px-4 pt-14 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:pt-24 lg:pb-28">
                 <HeroCopy />
                 <div className="animate-rise animate-rise-delay-1">
+                  {DEMO_MODE ? (
+                    <DemoSamples
+                      onLoaded={(result) => {
+                        setConversion(result);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                    />
+                  ) : (
                   <Intake
                     phase={phase}
                     maxBytes={maxBytes}
@@ -98,6 +108,7 @@ export default function Home() {
                     onReset={() => setPhase({ kind: "idle" })}
                     onCancel={() => abortRef.current?.()}
                   />
+                  )}
                 </div>
               </div>
             </section>

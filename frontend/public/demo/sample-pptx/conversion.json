@@ -1,0 +1,110 @@
+{
+ "title": "Submitting an Expense Report",
+ "source": {
+  "name": "sample-expense-guide.pptx",
+  "kind": "pptx",
+  "size_bytes": 42973
+ },
+ "stats": {
+  "headings": 4,
+  "paragraphs": 1,
+  "lists": 2,
+  "list_items": 3,
+  "tables": 1,
+  "images": 1,
+  "slides": 4,
+  "words": 37
+ },
+ "outline": [
+  {
+   "level": 1,
+   "text": "Submitting an Expense Report"
+  },
+  {
+   "level": 2,
+   "text": "Submitting an Expense Report",
+   "label": "Slide 1"
+  },
+  {
+   "level": 2,
+   "text": "Create the report",
+   "label": "Slide 2"
+  },
+  {
+   "level": 2,
+   "text": "The Expenses screen",
+   "label": "Slide 3"
+  },
+  {
+   "level": 2,
+   "text": "What to check",
+   "label": "Slide 4"
+  }
+ ],
+ "warnings": [],
+ "assets": [
+  {
+   "filename": "slide-003-image-01.png",
+   "content_type": "image/png",
+   "width": 960,
+   "height": 540,
+   "size_bytes": 9037,
+   "alt": "sample-screenshot.png",
+   "slide": 3,
+   "context": "The Expenses screen",
+   "occurrences": 1,
+   "displayable": true
+  }
+ ],
+ "profiles": [
+  {
+   "id": "clean",
+   "name": "Clean HTML",
+   "summary": "Semantic, style-free markup in one self-contained file. Ideal for websites and CMS editors.",
+   "html_filename": "document.html",
+   "html_bytes": 13187,
+   "package_bytes": 15057,
+   "files": [
+    "assets/slide-003-image-01.png",
+    "document.html",
+    "manifest.json"
+   ]
+  },
+  {
+   "id": "assets",
+   "name": "HTML + Assets",
+   "summary": "A styled, portable page with extracted images and CSS in an organised assets folder.",
+   "html_filename": "index.html",
+   "html_bytes": 1322,
+   "package_bytes": 9134,
+   "files": [
+    "assets/images/slide-003-image-01.png",
+    "assets/styles.css",
+    "index.html",
+    "manifest.json"
+   ]
+  },
+  {
+   "id": "freshservice",
+   "name": "Freshservice Article",
+   "summary": "Knowledge-base article markup with an image manifest and conversion report, matching the original FS converter.",
+   "html_filename": "article.html",
+   "html_bytes": 1711,
+   "package_bytes": 8782,
+   "files": [
+    "article.html",
+    "conversion-report.html",
+    "images/slide-003-image-01.png",
+    "manifest.json"
+   ]
+  }
+ ],
+ "timings_ms": {
+  "validate": 26,
+  "parse": 34,
+  "render": 14,
+  "total": 74
+ },
+ "id": "sample-pptx",
+ "expires_at": "2099-01-01T00:00:00Z"
+}

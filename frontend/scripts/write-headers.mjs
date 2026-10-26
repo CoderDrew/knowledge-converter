@@ -1,7 +1,9 @@
 // Writes out/_headers (Cloudflare Pages format) after `next build`.
 // The policy is derived from NEXT_PUBLIC_API_BASE_URL so the site may only
 // talk to, embed, and load images from its own conversion API.
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { join } from "node:path";
 
 function readEnvFile(path) {
   if (!existsSync(path)) return {};
@@ -14,16 +16,33 @@ function readEnvFile(path) {
 }
 
 const env = { ...readEnvFile(".env.production"), ...readEnvFile(".env.local"), ...process.env };
-const api = new URL(env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").origin;
+const demo = env.NEXT_PUBLIC_DEMO_MODE === "1";
+// Demo mode has no API: everything is served from this site's own origin.
+const api = demo ? "'self'" : new URL(env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").origin;
+
+// Next.js static export bootstraps with inline <script> blocks (RSC payload
+// pushes). They are fixed at build time, so hash every inline script in every
+// exported HTML file instead of allowing 'unsafe-inline'. Re-run after every build.
+function htmlFiles(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? (e.name === "demo" ? [] : htmlFiles(join(dir, e.name))) : e.name.endsWith(".html") ? [join(dir, e.name)] : [],
+  );
+}
+const scriptHashes = new Set();
+for (const file of htmlFiles("out")) {
+  for (const m of readFileSync(file, "utf8").matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)) {
+    scriptHashes.add(`'sha256-${createHash("sha256").update(m[1], "utf8").digest("base64")}'`);
+  }
+}
+const uniq = (...tokens) => [...new Set(tokens)].join(" ");
 
 const csp = [
   "default-src 'self'",
-  // Next.js static export bootstraps with inline scripts.
-  "script-src 'self' 'unsafe-inline'",
+  `script-src ${uniq("'self'", ...scriptHashes)}`,
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self'",
-  `img-src 'self' data: ${api}`,
-  `connect-src 'self' ${api}`,
+  `img-src ${uniq("'self'", "data:", api)}`,
+  `connect-src ${uniq("'self'", api)}`,
   `frame-src ${api}`,
   "object-src 'none'",
   "base-uri 'none'",
@@ -37,7 +56,17 @@ const headers = `/*
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Cross-Origin-Opener-Policy: same-origin
+${demo ? demoHeaders() : ""}`;
+
+// Pre-rendered demo files: drop the app CSP and serve them like the API does,
+// sandboxed (no scripts, opaque origin) and frameable only by this site.
+function demoHeaders() {
+  return `
+/demo/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; frame-ancestors 'self'; sandbox
 `;
+}
 
 writeFileSync("out/_headers", headers);
-console.log(`Wrote out/_headers (API origin: ${api})`);
+console.log(`Wrote out/_headers (${demo ? "demo mode" : `API origin: ${api}`}; ${scriptHashes.size} inline script hashes)`);
