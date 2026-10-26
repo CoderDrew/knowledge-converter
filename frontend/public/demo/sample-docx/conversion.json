@@ -3,7 +3,7 @@
  "source": {
   "name": "Sample Cash Management.docx",
   "kind": "docx",
-  "size_bytes": 42489
+  "size_bytes": 43730
  },
  "stats": {
   "headings": 2,
@@ -85,9 +85,9 @@
  ],
  "timings_ms": {
   "validate": 1,
-  "parse": 21,
-  "render": 6,
-  "total": 28
+  "parse": 22,
+  "render": 7,
+  "total": 30
  },
  "id": "sample-docx",
  "expires_at": "2099-01-01T00:00:00Z"

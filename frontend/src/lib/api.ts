@@ -1,4 +1,3 @@
-export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
 /**
  * Static demo mode (NEXT_PUBLIC_DEMO_MODE=1): no backend and no uploads. The
@@ -7,6 +6,12 @@ export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0
  */
 export const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "1";
 const DEMO_BASE = "/demo";
+
+// Demo builds compile in no API base URL at all; the branch below is removed
+// at build time because NEXT_PUBLIC_DEMO_MODE is inlined.
+export const API_BASE = DEMO_MODE
+  ? ""
+  : (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
 export interface DemoSample {
   id: string;

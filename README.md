@@ -38,11 +38,17 @@ npm run dev
 
 Open http://localhost:3000, drop a `.docx` or `.pptx`, then use **Preview**, **HTML**, and **Assets**, switch **Output profile**, and download the HTML or ZIP. Synthetic samples are in `backend/samples/`.
 
-Production-style check of the static export, with the real CSP headers applied:
+Production-style check of the static export. The site is a static export (`output: "export"`), so `next start` does not apply; serve the `out/` folder instead:
 
 ```bash
-cd frontend && npm run build && npm start
+cd frontend
+npm run build                      # add NEXT_PUBLIC_DEMO_MODE=1 for the public demo build
+npx wrangler pages dev out         # Cloudflare's local server; applies out/_headers (CSP)
+# or
+npx serve out                      # quick static preview; does NOT apply out/_headers
 ```
+
+Both run through `npx`; nothing needs to be installed globally.
 
 ## Output profiles
 

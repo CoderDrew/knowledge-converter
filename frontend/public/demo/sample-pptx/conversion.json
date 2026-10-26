@@ -3,7 +3,7 @@
  "source": {
   "name": "Sample Cash Management.pptx",
   "kind": "pptx",
-  "size_bytes": 34962
+  "size_bytes": 34777
  },
  "stats": {
   "headings": 1,
@@ -86,9 +86,9 @@
  ],
  "timings_ms": {
   "validate": 1,
-  "parse": 11,
-  "render": 6,
-  "total": 17
+  "parse": 9,
+  "render": 5,
+  "total": 15
  },
  "id": "sample-pptx",
  "expires_at": "2099-01-01T00:00:00Z"
