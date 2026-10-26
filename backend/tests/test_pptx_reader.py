@@ -15,8 +15,8 @@ def test_sample_deck_extracts_title_and_image(sample_pptx: Path):
     assert len(document.assets) == 1
     assert document.assets[0].filename == "slide-001-image-01.png"
     assert document.assets[0].slide == 1
-    assert plain_text(document.blocks[1].title) == "Cash Management"
-    assert document.title == "Cash Management"
+    assert plain_text(document.blocks[1].title) == "Expense Reports"
+    assert document.title == "Expense Reports"
 
 
 def test_slides_become_sections_in_order(rich_pptx: Path):

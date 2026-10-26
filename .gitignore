@@ -11,6 +11,24 @@ frontend/out/
 frontend/*.tsbuildinfo
 frontend/.env.local
 
-# Never commit real customer documents; synthetic samples live in backend/samples/.
-/*.docx
-/*.pptx
+# Never commit real client documents. Only generated synthetic samples
+# (backend/scripts/generate_samples.py) are allowed; scripts/check_confidential.py
+# enforces the rest. Local blocked-term list:
+.confidential-terms
+*.doc
+*.docx
+*.docm
+*.dotx
+*.ppt
+*.pptx
+*.pptm
+*.potx
+*.xls
+*.xlsx
+*.xlsm
+*.pdf
+*.msg
+*.eml
+~$*
+!/backend/samples/sample-*.docx
+!/backend/samples/sample-*.pptx

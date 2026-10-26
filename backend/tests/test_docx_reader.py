@@ -22,24 +22,24 @@ def fresh_html(path: Path) -> str:
 def test_docx_semantics_images_and_manifest(sample_docx: Path):
     document = read_document(sample_docx, sample_docx.name)
     article = PROFILES["freshservice"].build(document).html
-    assert "<h1>Cash Management</h1>" in article
-    assert "<strong>Cash Management</strong>" in article
+    assert "<h1>Expense Reports</h1>" in article
+    assert "<strong>Expense Reports</strong>" in article
     assert "<em> to review </em>" in article
     assert "<ol>" in article and "Step 1" in article
-    assert "<ul>" in article and "Confirm the displayed balance" in article
+    assert "<ul>" in article and "Confirm the displayed total" in article
     assert "<table>" in article and "<th>Field</th>" in article
     assert 'class="callout tip"' in article
     assert 'src="images/image-001.png"' in article
     assert article.index("Step 1") < article.index("image-001.png") < article.index("Step 2")
     asset = document.assets[0]
     assert asset.position == 3
-    assert asset.nearest_heading == "Cash Management"
+    assert asset.nearest_heading == "Expense Reports"
     assert asset.nearest_step.startswith("Step 1")
     assert len(asset.sha256) == 64
     assert document.stats.headings == 1
     assert document.stats.tables == 1
     assert document.stats.lists == 2
-    assert document.title == "Cash Management"
+    assert document.title == "Expense Reports"
 
 
 def test_numbering_continues_across_image_only_paragraph(tmp_path: Path):

@@ -1,0 +1,10 @@
+#!/bin/sh
+# Blocks confidential documents, screenshots and terms. Enable with:
+#   git config core.hooksPath .githooks
+for py in python3 python py; do
+  if command -v "$py" >/dev/null 2>&1; then
+    exec "$py" scripts/check_confidential.py --staged
+  fi
+done
+echo "pre-commit: Python not found; cannot run scripts/check_confidential.py" >&2
+exit 1

@@ -116,7 +116,7 @@ def test_external_entities_are_not_resolved(sample_docx: Path, tmp_path: Path):
     with zipfile.ZipFile(sample_docx) as archive:
         document_xml = archive.read("word/document.xml").decode()
     doctype = f'<!DOCTYPE w:document [<!ENTITY xxe SYSTEM "{secret.as_uri()}">]>'
-    hostile = document_xml.replace("?>", "?>" + doctype, 1).replace("Cash Management</w:t>", "&xxe;</w:t>", 1)
+    hostile = document_xml.replace("?>", "?>" + doctype, 1).replace("Expense Reports</w:t>", "&xxe;</w:t>", 1)
     path = rezip(sample_docx, tmp_path / "xxe.docx", replace={"word/document.xml": hostile.encode()})
     from knowledge_engine.pipeline import read_document
     from knowledge_engine.profiles import PROFILES

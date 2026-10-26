@@ -1,6 +1,6 @@
 """Synthetic fixtures. No proprietary documents are needed to run the suite.
 
-`sample_docx` and `sample_pptx` mirror the original FS Knowledge Converter
+`sample_docx` and `sample_pptx` follow the shape of the original FS Knowledge Converter
 fixtures so its assertions can be carried over unchanged in spirit.
 """
 from __future__ import annotations
@@ -49,22 +49,22 @@ def add_hyperlink(paragraph, url: str, text: str) -> None:
 def sample_docx(tmp_path: Path) -> Path:
     image = make_png(tmp_path / "shot.png")
     doc = Document()
-    doc.add_heading("Cash Management", level=1)
+    doc.add_heading("Expense Reports", level=1)
     p = doc.add_paragraph()
     p.add_run("Use ").bold = False
-    p.add_run("Cash Management").bold = True
+    p.add_run("Expense Reports").bold = True
     p.add_run(" to review ").italic = True
-    p.add_run("balances.")
-    numbered = doc.add_paragraph("Step 1: Open the banking workspace.", style="List Number")
+    p.add_run("spending.")
+    numbered = doc.add_paragraph("Step 1: Open the expenses workspace.", style="List Number")
     numbered.add_run().add_picture(str(image), width=Inches(4))
-    doc.add_paragraph("Step 2: Select the bank account.", style="List Number")
-    doc.add_paragraph("Confirm the displayed balance.", style="List Bullet")
+    doc.add_paragraph("Step 2: Select the cost centre.", style="List Number")
+    doc.add_paragraph("Confirm the displayed total.", style="List Bullet")
     table = doc.add_table(rows=2, cols=2)
     table.cell(0, 0).text = "Field"; table.cell(0, 1).text = "Value"
     table.cell(1, 0).text = "Status"; table.cell(1, 1).text = "Approved"
     note_style = doc.styles.add_style("Quick Tip", WD_STYLE_TYPE.PARAGRAPH)
     doc.add_paragraph("Quick Tip: verify the date.", style=note_style)
-    path = tmp_path / "Cash Management.docx"
+    path = tmp_path / "Expense Reports.docx"
     doc.save(path)
     return path
 
@@ -130,9 +130,9 @@ def sample_pptx(tmp_path: Path) -> Path:
     image = make_png(tmp_path / "slide.png")
     prs = Presentation()
     slide = prs.slides.add_slide(prs.slide_layouts[5])
-    slide.shapes.title.text = "Cash Management"
+    slide.shapes.title.text = "Expense Reports"
     slide.shapes.add_picture(str(image), PptxInches(1), PptxInches(1.5), width=PptxInches(5))
-    path = tmp_path / "STP - Cash Management.pptx"
+    path = tmp_path / "Expense Reports Training.pptx"
     prs.save(path)
     return path
 

@@ -58,7 +58,7 @@ Only the output contract is vendor-specific: `article.html` naming and inline CS
 
 | Document | Words | Images (order + bytes) | Structure |
 |---|---|---|---|
-| Sample Cash Management.docx (synthetic) | identical (56) | identical (1) | identical |
-| Cash Management.docx (real, 712 KB) | identical (506) | identical (16) | 6 tags fewer: 4 empty `<p>` removed, 2 adjacent `<strong>` runs merged (intended) |
+| `sample-expense-guide.docx` (synthetic, re-run 2026-10-26) | identical (84) | identical (1) | identical |
+| A private real-world document (not in this repository) | identical | identical | 6 tags fewer: empty `<p>` removed, adjacent `<strong>` runs merged (intended) |
 
 The original's deliberately deferred PPTX↔DOCX hash-matching workflow (a second "reference" upload) was not ported: the new app converts PPTX directly. It could return as an optional Freshservice-profile feature.

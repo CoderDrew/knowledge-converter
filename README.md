@@ -36,7 +36,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000, drop a `.docx` or `.pptx`, then use **Preview**, **HTML**, and **Assets**, switch **Output profile**, and download the HTML or ZIP. Synthetic samples are in `backend/samples/`.
+Open http://localhost:3000, drop a `.docx` or `.pptx`, then use **Preview**, **HTML**, and **Assets**, switch **Output profile**, and download the HTML or ZIP. Synthetic samples are in `backend/samples/` (regenerate them with `python scripts/generate_samples.py` from `backend/`).
 
 Production-style check of the static export, with the real CSP headers applied:
 
@@ -73,10 +73,20 @@ Regression check against the original application (read-only import of its conve
 
 ```bash
 cd backend
-.venv/Scripts/python scripts/compare_with_original.py "C:/Projects/FS Knowledge Converter" "samples/Sample Cash Management.docx"
+.venv/Scripts/python scripts/compare_with_original.py "C:/Projects/FS Knowledge Converter" samples/sample-expense-guide.docx
 ```
 
 Frontend type-check: `cd frontend && npm run lint`.
+
+## Confidential material
+
+Only synthetic documents belong in this repository. `scripts/check_confidential.py` blocks Office files other than the generated samples, unknown images, and blocked terms (including inside ZIPs and Office packages). Enable it as a pre-commit hook once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Add client names or project codes you want blocked, one per line, to an untracked `.confidential-terms` file at the repository root. The backend test suite runs the same check.
 
 ## Configuration
 

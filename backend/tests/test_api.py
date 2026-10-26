@@ -41,9 +41,9 @@ def test_full_docx_flow(client: TestClient, sample_docx: Path, settings: Setting
     assert response.status_code == 201, response.text
     data = response.json()
     job = data["id"]
-    assert len(job) == 32 and data["title"] == "Cash Management"
-    assert data["source"] == {"name": "Cash Management.docx", "kind": "docx", "size_bytes": sample_docx.stat().st_size}
-    assert data["stats"]["images"] == 1 and data["outline"][0]["text"] == "Cash Management"
+    assert len(job) == 32 and data["title"] == "Expense Reports"
+    assert data["source"] == {"name": "Expense Reports.docx", "kind": "docx", "size_bytes": sample_docx.stat().st_size}
+    assert data["stats"]["images"] == 1 and data["outline"][0]["text"] == "Expense Reports"
     assert {"validate", "parse", "render", "total"} <= set(data["timings_ms"])
 
     assert client.get(f"/api/conversions/{job}").json()["id"] == job
@@ -57,10 +57,10 @@ def test_full_docx_flow(client: TestClient, sample_docx: Path, settings: Setting
 
     source = client.get(f"/api/conversions/{job}/profiles/clean/source")
     assert source.headers["content-type"].startswith("text/plain")
-    assert "<h1>Cash Management</h1>" in source.text
+    assert "<h1>Expense Reports</h1>" in source.text
 
     html = client.get(f"/api/conversions/{job}/profiles/freshservice/html")
-    assert 'attachment; filename="cash-management-freshservice.html"' == html.headers["content-disposition"]
+    assert 'attachment; filename="expense-reports-freshservice.html"' == html.headers["content-disposition"]
 
     package = client.get(f"/api/conversions/{job}/profiles/assets/package")
     assert package.headers["content-type"] == "application/zip"
