@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cash Management Training</title>
+<style>body{font-family:Arial,sans-serif;line-height:1.55;color:#172b4d;max-width:900px;margin:32px auto;padding:0 24px}h1,h2,h3{color:#12344d}img{display:block;max-width:100%;height:auto;margin:18px 0;border:1px solid #dfe3e8;border-radius:6px}table{border-collapse:collapse;width:100%;margin:18px 0}th,td{border:1px solid #cfd7df;padding:9px;text-align:left;vertical-align:top}th{background:#f2f5f7}.callout{padding:12px 16px;border-left:4px solid #2c5cc5;background:#f2f7ff}.warning,.caution{border-color:#d82c0d;background:#fff4f2}.tip{border-color:#00a886;background:#effffb}.conversion-warning{color:#b42318}.speaker-notes{color:#5e6c84;font-size:.92em}</style>
+</head><body><h1>Cash Management Training</h1>
+<p>Use this synthetic job aid to verify the local converter. <strong>No real customer data is present.</strong></p>
+<h2>Review a bank statement</h2>
+<ol><li>Step 1: Open the Cash Management workspace.</li></ol>
+<p><img src="images/image-001.png" alt="Instructional image 1" data-source-image="1"></p>
+<ol start="2"><li>Step 2: Select Training Account 001.</li></ol>
+<ul><li>Confirm the statement date.</li></ul>
+<table><thead><tr><th>Field</th><th>Expected value</th></tr></thead><tbody><tr><td>Account</td><td>Training Account 001</td></tr><tr><td>Status</td><td>Ready</td></tr></tbody></table>
+<p class="callout tip">Quick Tip: Compare the date before continuing.</p></body></html>

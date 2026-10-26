@@ -1,5 +1,6 @@
 "use client";
 
+import { DEMO_MODE } from "@/lib/api";
 import { useEffect, useMemo, useState } from "react";
 import { urls, type Conversion, type ProfileId } from "@/lib/api";
 import { formatBytes, formatSeconds, plural } from "@/lib/format";
@@ -69,6 +70,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
           <div className="flex flex-wrap gap-2 lg:justify-end">
             <a
               href={urls.html(conversion.id, profile.id)}
+              download={DEMO_MODE ? profile.html_filename : undefined}
               className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-surface px-4 py-2.5 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-ink"
             >
               <DownloadIcon size={16} /> {profile.html_filename}
@@ -76,6 +78,7 @@ export function Workspace({ conversion, onNew, onDiscard }: { conversion: Conver
             </a>
             <a
               href={urls.package(conversion.id, profile.id)}
+              download={DEMO_MODE ? `${conversion.id}-${profile.id}.zip` : undefined}
               className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-ink shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
               <ArchiveIcon size={16} /> Download ZIP

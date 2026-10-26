@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Mindjax Knowledge Converter 1.0.0">
+<title>Cash Management Training</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<article class="kc-document">
+<h1>Cash Management Training</h1>
+<p>Use this synthetic job aid to verify the local converter. <strong>No real customer data is present.</strong></p>
+<h2>Review a bank statement</h2>
+<ol><li>Step 1: Open the Cash Management workspace.</li></ol>
+<p><img src="assets/images/image-001.png" alt="Image 1" width="960" height="540" loading="lazy"></p>
+<ol start="2"><li>Step 2: Select Training Account 001.</li></ol>
+<ul><li>Confirm the statement date.</li></ul>
+<table><thead><tr><th scope="col">Field</th><th scope="col">Expected value</th></tr></thead><tbody><tr><td>Account</td><td>Training Account 001</td></tr><tr><td>Status</td><td>Ready</td></tr></tbody></table>
+<aside class="kc-callout kc-callout-tip"><p>Quick Tip: Compare the date before continuing.</p></aside>
+</article>
+</body>
+</html>

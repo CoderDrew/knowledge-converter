@@ -1,0 +1,95 @@
+{
+ "title": "Review a bank statement",
+ "source": {
+  "name": "Sample Cash Management.pptx",
+  "kind": "pptx",
+  "size_bytes": 34962
+ },
+ "stats": {
+  "headings": 1,
+  "paragraphs": 0,
+  "lists": 0,
+  "list_items": 0,
+  "tables": 0,
+  "images": 1,
+  "slides": 1,
+  "words": 4
+ },
+ "outline": [
+  {
+   "level": 1,
+   "text": "Review a bank statement"
+  },
+  {
+   "level": 2,
+   "text": "Review a bank statement",
+   "label": "Slide 1"
+  }
+ ],
+ "warnings": [],
+ "assets": [
+  {
+   "filename": "slide-001-image-01.png",
+   "content_type": "image/png",
+   "width": 960,
+   "height": 540,
+   "size_bytes": 8679,
+   "alt": "synthetic-screenshot.png",
+   "slide": 1,
+   "context": "Review a bank statement",
+   "occurrences": 1,
+   "displayable": true
+  }
+ ],
+ "profiles": [
+  {
+   "id": "clean",
+   "name": "Clean HTML",
+   "summary": "Semantic, style-free markup in one self-contained file. Ideal for websites and CMS editors.",
+   "html_filename": "document.html",
+   "html_bytes": 12036,
+   "package_bytes": 13844,
+   "files": [
+    "assets/slide-001-image-01.png",
+    "document.html",
+    "manifest.json"
+   ]
+  },
+  {
+   "id": "assets",
+   "name": "HTML + Assets",
+   "summary": "A styled, portable page with extracted images and CSS in an organised assets folder.",
+   "html_filename": "index.html",
+   "html_bytes": 604,
+   "package_bytes": 8407,
+   "files": [
+    "assets/images/slide-001-image-01.png",
+    "assets/styles.css",
+    "index.html",
+    "manifest.json"
+   ]
+  },
+  {
+   "id": "freshservice",
+   "name": "Freshservice Article",
+   "summary": "Knowledge-base article markup with an image manifest and conversion report, matching the original FS converter.",
+   "html_filename": "article.html",
+   "html_bytes": 1063,
+   "package_bytes": 8071,
+   "files": [
+    "article.html",
+    "conversion-report.html",
+    "images/slide-001-image-01.png",
+    "manifest.json"
+   ]
+  }
+ ],
+ "timings_ms": {
+  "validate": 1,
+  "parse": 11,
+  "render": 6,
+  "total": 17
+ },
+ "id": "sample-pptx",
+ "expires_at": "2099-01-01T00:00:00Z"
+}

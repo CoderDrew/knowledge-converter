@@ -1,5 +1,6 @@
 "use client";
 
+import { DEMO_MODE } from "@/lib/api";
 import { urls, type Conversion, type ProfileId } from "@/lib/api";
 import { formatBytes } from "@/lib/format";
 import { DownloadIcon, ImageIcon } from "./icons";
@@ -56,7 +57,8 @@ export function AssetsPane({ conversion, profileId }: { conversion: Conversion; 
                     {asset.filename}
                   </p>
                   <a
-                    href={`${urls.asset(conversion.id, asset.filename)}?download=1`}
+                    href={DEMO_MODE ? urls.asset(conversion.id, asset.filename) : `${urls.asset(conversion.id, asset.filename)}?download=1`}
+                    download={DEMO_MODE ? asset.filename : undefined}
                     className="shrink-0 rounded-md p-1 text-muted transition hover:bg-surface-2 hover:text-ink"
                     aria-label={`Download ${asset.filename}`}
                   >

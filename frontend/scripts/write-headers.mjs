@@ -14,7 +14,9 @@ function readEnvFile(path) {
 }
 
 const env = { ...readEnvFile(".env.production"), ...readEnvFile(".env.local"), ...process.env };
-const api = new URL(env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").origin;
+const demo = env.NEXT_PUBLIC_DEMO_MODE === "1";
+// Demo mode has no API: everything is served from this site's own origin.
+const api = demo ? "'self'" : new URL(env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").origin;
 
 const csp = [
   "default-src 'self'",
@@ -37,7 +39,17 @@ const headers = `/*
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Cross-Origin-Opener-Policy: same-origin
+${demo ? demoHeaders() : ""}`;
+
+// Pre-rendered demo files: drop the app CSP and serve them like the API does,
+// sandboxed (no scripts, opaque origin) and frameable only by this site.
+function demoHeaders() {
+  return `
+/demo/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; frame-ancestors 'self'; sandbox
 `;
+}
 
 writeFileSync("out/_headers", headers);
-console.log(`Wrote out/_headers (API origin: ${api})`);
+console.log(`Wrote out/_headers (${demo ? "demo mode" : `API origin: ${api}`})`);

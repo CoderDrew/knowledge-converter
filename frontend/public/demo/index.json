@@ -1,0 +1,49 @@
+{
+ "samples": [
+  {
+   "id": "sample-docx",
+   "name": "Sample Cash Management.docx",
+   "kind": "docx",
+   "title": "Cash Management Training"
+  },
+  {
+   "id": "sample-pptx",
+   "name": "Sample Cash Management.pptx",
+   "kind": "pptx",
+   "title": "Review a bank statement"
+  }
+ ],
+ "health": {
+  "status": "ok",
+  "version": "1.0.0",
+  "limits": {
+   "max_upload_bytes": 20971520,
+   "accepted_extensions": [
+    ".docx",
+    ".pptx"
+   ],
+   "result_ttl_seconds": 1800,
+   "conversion_timeout_seconds": 60
+  },
+  "profiles": [
+   {
+    "id": "clean",
+    "name": "Clean HTML",
+    "summary": "Semantic, style-free markup in one self-contained file. Ideal for websites and CMS editors.",
+    "html_filename": "document.html"
+   },
+   {
+    "id": "assets",
+    "name": "HTML + Assets",
+    "summary": "A styled, portable page with extracted images and CSS in an organised assets folder.",
+    "html_filename": "index.html"
+   },
+   {
+    "id": "freshservice",
+    "name": "Freshservice Article",
+    "summary": "Knowledge-base article markup with an image manifest and conversion report, matching the original FS converter.",
+    "html_filename": "article.html"
+   }
+  ]
+ }
+}

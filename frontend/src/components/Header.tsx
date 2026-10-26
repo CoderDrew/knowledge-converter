@@ -1,10 +1,10 @@
 "use client";
 
-export type EngineStatus = "checking" | "online" | "offline";
+export type EngineStatus = "checking" | "online" | "offline" | "demo";
 
 export function Header({ status, onHome }: { status: EngineStatus; onHome: () => void }) {
-  const label = { checking: "Connecting to engine", online: "Engine online", offline: "Engine offline" }[status];
-  const dot = { checking: "bg-muted pulse-dot", online: "bg-success", offline: "bg-danger" }[status];
+  const label = { checking: "Connecting to engine", online: "Engine online", offline: "Engine offline", demo: "Demo mode · samples only" }[status];
+  const dot = { checking: "bg-muted pulse-dot", online: "bg-success", offline: "bg-danger", demo: "bg-accent" }[status];
   return (
     <header className="sticky top-0 z-30 border-b border-line/80 bg-paper/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
