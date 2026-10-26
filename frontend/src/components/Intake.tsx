@@ -45,7 +45,7 @@ export function Intake({
   onCancel: () => void;
 }) {
   return (
-    <div className="relative rounded-[22px] border border-line bg-surface p-2 shadow-card">
+    <div className="relative rounded-[var(--mj-radius-md)] border border-line bg-surface p-2">
       {phase.kind === "idle" && <Dropzone maxBytes={maxBytes} disabled={disabled} onFile={onFile} />}
       {(phase.kind === "uploading" || phase.kind === "converting") && <Progress phase={phase} onCancel={onCancel} />}
       {phase.kind === "error" && <ErrorPanel phase={phase} onReset={onReset} />}
@@ -86,7 +86,7 @@ function Dropzone({ maxBytes, disabled, onFile }: { maxBytes: number; disabled: 
       } ${disabled ? "opacity-60" : ""}`}
     >
       <div
-        className={`mb-6 grid size-16 place-items-center rounded-2xl transition-all duration-300 ${
+        className={`mb-6 grid size-16 place-items-center rounded-[var(--mj-radius-md)] transition-all duration-300 ${
           over ? "-translate-y-1 bg-accent text-accent-ink" : "bg-ink text-paper"
         }`}
       >
@@ -98,7 +98,7 @@ function Dropzone({ maxBytes, disabled, onFile }: { maxBytes: number; disabled: 
         type="button"
         disabled={disabled}
         onClick={() => input.current?.click()}
-        className="mt-6 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition hover:-translate-y-0.5 hover:shadow-lg disabled:pointer-events-none"
+        className="mt-6 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink transition disabled:pointer-events-none"
       >
         Choose a file
       </button>
@@ -114,8 +114,8 @@ function Dropzone({ maxBytes, disabled, onFile }: { maxBytes: number; disabled: 
         }}
       />
       <div className="mt-7 flex flex-wrap items-center justify-center gap-2 text-xs font-medium text-ink-2">
-        <span className="rounded-md border border-line bg-surface px-2 py-1 font-mono">.docx</span>
-        <span className="rounded-md border border-line bg-surface px-2 py-1 font-mono">.pptx</span>
+        <span className="rounded-md border border-line bg-surface px-2 py-1">.docx</span>
+        <span className="rounded-md border border-line bg-surface px-2 py-1">.pptx</span>
         <span className="flex items-center gap-1.5 rounded-md px-2 py-1 text-muted">
           <LockIcon size={13} /> Deleted after processing
         </span>
@@ -236,7 +236,7 @@ function ErrorPanel({ phase, onReset }: { phase: Extract<IntakePhase, { kind: "e
           {phase.file.name} · {formatBytes(phase.file.size)}
         </p>
       )}
-      <button onClick={onReset} className="mt-7 self-start rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-paper transition hover:-translate-y-0.5">
+      <button onClick={onReset} className="mt-7 self-start rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink transition">
         Try another file
       </button>
     </div>

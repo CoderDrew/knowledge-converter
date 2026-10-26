@@ -2,56 +2,29 @@
 
 /* ------------------------------------------------------------------ tokens */
 
+/* Brand tokens (brand-tokens.css, loaded first from layout.tsx) are the only
+   source of colour. These aliases keep the component class names stable. */
 :root {
-  --paper: #f3f1ec;
-  --surface: #ffffff;
-  --surface-2: #f8f7f4;
-  --ink: #111116;
-  --ink-2: #3a3a44;
-  --muted: #6c6b75;
-  --line: #e2dfd8;
-  --line-strong: #cfcbc2;
-  --accent: #4b3bff;
-  --accent-ink: #ffffff;
-  --accent-soft: #ecebff;
-  --signal: #c8f135;
-  --success: #12805c;
-  --success-soft: #e3f5ec;
-  --danger: #c4321a;
-  --danger-soft: #fdebe6;
-  --warn: #9a6200;
-  --warn-soft: #fdf3dc;
-  --code-bg: #15151c;
-  --code-ink: #e7e6ef;
-  --shadow: 0 1px 2px rgb(17 17 22 / 0.04), 0 12px 32px -12px rgb(17 17 22 / 0.14);
+  --paper: var(--mj-white);
+  --surface: var(--mj-white);
+  --surface-2: var(--mj-surface);
+  --ink: var(--mj-ink);
+  --ink-2: var(--mj-text);
+  --muted: var(--mj-muted);
+  --line: var(--mj-line);
+  --line-strong: var(--mj-control);
+  --accent: var(--mj-teal-700);
+  --accent-ink: var(--mj-white);
+  --accent-soft: var(--mj-tint);
+  --success: var(--mj-teal-700);
+  --success-soft: var(--mj-tint);
+  --danger: var(--mj-red);
+  --danger-soft: var(--mj-tint-error);
+  --warn: var(--mj-brown);
+  --warn-soft: var(--mj-tint-warn);
+  --code-bg: var(--mj-surface);
+  --code-ink: var(--mj-ink);
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0e0e12;
-    --surface: #17171d;
-    --surface-2: #1d1d24;
-    --ink: #f1f0f5;
-    --ink-2: #cfced8;
-    --muted: #9796a3;
-    --line: #2a2a33;
-    --line-strong: #3a3a45;
-    --accent: #7c70ff;
-    --accent-ink: #0e0e12;
-    --accent-soft: #232046;
-    --signal: #c8f135;
-    --success: #4fd1a1;
-    --success-soft: #12271f;
-    --danger: #ff8a73;
-    --danger-soft: #2e1713;
-    --warn: #f2c35b;
-    --warn-soft: #2a2213;
-    --code-bg: #0b0b0f;
-    --code-ink: #e7e6ef;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -16px rgb(0 0 0 / 0.6);
-    color-scheme: dark;
-  }
 }
 
 @theme inline {
@@ -66,7 +39,7 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
-  --color-signal: var(--signal);
+  --color-teal: var(--mj-teal);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-danger: var(--danger);
@@ -75,10 +48,11 @@
   --color-warn-soft: var(--warn-soft);
   --color-code-bg: var(--code-bg);
   --color-code-ink: var(--code-ink);
-  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --shadow-card: var(--shadow);
+  --font-sans: var(--mj-font-body);
+  --font-display: var(--mj-font-display);
+  /* Monospace only for actual code and HTML output. */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --shadow-card: none;
 }
 
 /* -------------------------------------------------------------------- base */
@@ -92,19 +66,29 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans);
+  font-size: var(--mj-size-body);
+  line-height: var(--mj-leading-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: var(--signal);
-  color: #111116;
+  background: var(--mj-tint);
+  color: var(--mj-ink);
 }
 
+h1, h2 {
+  font-family: var(--mj-font-display);
+  font-weight: 400;
+  letter-spacing: 0;
+  font-synthesis: none;
+}
+
+/* BRAND.md rule 12: double ring, 2px white inside and 2px ink outside. */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline: var(--mj-focus-outline-hc);
+  outline-offset: var(--mj-focus-hc-offset);
+  box-shadow: var(--mj-focus-ring);
 }
 
 /* A faint engineering grid behind the hero. */
@@ -171,13 +155,13 @@ body {
 }
 
 /* --------------------------------------------------------- code highlighting */
-
+/* Light code view on --mj-surface; every colour is AA (>= 4.5:1) on surface. */
 .code-view .hljs-tag,
-.code-view .hljs-name { color: #9d93ff; }
-.code-view .hljs-attr { color: #c8f135; }
-.code-view .hljs-string { color: #ffb38a; }
+.code-view .hljs-name { color: var(--mj-teal-700); }
+.code-view .hljs-attr { color: var(--mj-brown); }
+.code-view .hljs-string { color: var(--mj-red); }
 .code-view .hljs-meta,
-.code-view .hljs-comment { color: #8a8998; }
-.code-view .hljs-keyword { color: #ff8fc7; }
+.code-view .hljs-comment { color: var(--mj-muted); }
+.code-view .hljs-keyword { color: var(--mj-ink); font-weight: 600; }
 .code-view .hljs-symbol,
-.code-view .kc-elided { color: #6fd8ff; font-style: italic; }
+.code-view .kc-elided { color: var(--mj-muted); font-style: italic; }

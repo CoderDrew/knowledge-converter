@@ -22,7 +22,7 @@ export function PreviewPane({ conversionId, profileId, title }: { conversionId: 
   const width = WIDTHS.find((w) => w.id === device)!.width;
 
   return (
-    <div className="overflow-hidden rounded-[18px] border border-line bg-surface shadow-card">
+    <div className="overflow-hidden rounded-[var(--mj-radius-md)] border border-line bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-surface-2 px-4 py-2.5">
         <div className="flex items-center gap-3">
           <span className="flex gap-1.5" aria-hidden="true">

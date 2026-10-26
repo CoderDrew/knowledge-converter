@@ -1,0 +1,210 @@
+/* Copied verbatim from mindjax/brand/tokens.css (BRAND.md Appendix A). Do not edit values here. */
+/* Mindjax design tokens. Companion to BRAND.md (the rules for using them).
+   Light mode only in v1. APPROVED: palette, fonts, teal-700, ochre-text (white backgrounds only).
+   PROPOSED (use as defaults, flag them): neutrals, tints, type scale, spacing, shape, components.
+   This file is the source of truth; tokens.json is generated from it.
+   Use var(--mj-*) only. Never hard-code hex values in components. */
+
+@font-face { font-family: "Michroma"; src: url("./fonts/Michroma-Regular.ttf") format("truetype");
+  font-weight: 400; font-style: normal; font-display: swap; }
+/* PROPOSED, APPROXIMATE: local Arial scaled 130% to cut the swap reflow. Michroma is ~1.41-1.56x wider
+   than Arial (the 1.30x figure was vs Inter), so this narrows, not closes, the gap; overrides pin line metrics. */
+@font-face { font-family: "Michroma Fallback"; src: local("Arial"), local("ArialMT");
+  size-adjust: 130%; ascent-override: 89%; descent-override: 21%; line-gap-override: 0%; font-weight: 400; font-style: normal; }
+@font-face { font-family: "Inter"; src: url("./fonts/Inter-Variable.ttf") format("truetype");
+  font-weight: 400 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Inter"; src: url("./fonts/Inter-Italic-Variable.ttf") format("truetype");
+  font-weight: 400; font-style: italic; font-display: swap; }
+
+:root {
+  /* ---- Brand palette (Approved) ---- */
+  --mj-teal: #248EA7;   /* LEAD: text >=24px / 18pt, fills, chart series 1, the one teal band */
+  --mj-blue: #58C2DB;   /* SUPPORT, decoration only: never text, never the only cue for meaning */
+  --mj-red: #A52525;    /* accent: errors */
+  --mj-orange: #E35526; /* accent: decorative dots, one labelled milestone; NEVER large backgrounds; no text <24px */
+  --mj-gold: #FEC976;   /* accent: highlight tint, decoration only; never text, never the only cue */
+  --mj-ochre: #CA872A;  /* DECORATIVE ONLY: never text, icons or meaningful borders (2.996:1) */
+  --mj-brown: #64280F;  /* accent: warm text and icons on warm tints (warning icon) */
+  /* ---- Derived text tones (approved 2026-10-18) ---- */
+  --mj-teal-700: #1B6F83; /* default for teal text <24px / 18pt; links, button fills; 5.76:1 */
+  --mj-ochre-text: #A16B21; /* ochre-coloured text, WHITE BACKGROUNDS ONLY (4.525:1); fails on surface/tint/warn tint */
+  /* ---- Neutrals (Proposed) ---- */
+  --mj-ink: #1F2327;
+  --mj-text: #3A3F44;
+  --mj-muted: #6B7177;
+  --mj-control: #8A9096;
+  --mj-line: #E3E7E9;
+  --mj-surface: #F5F7F8;
+  --mj-tint: #E8F5F8;
+  --mj-white: #FFFFFF;
+  --mj-tint-warn: #FFF4E2;
+  --mj-tint-error: #FBEDED;
+  --mj-tint-info: var(--mj-tint);
+
+  /* ---- Role aliases ---- */
+  --mj-color-bg: var(--mj-white);
+  --mj-color-bg-alt: var(--mj-surface);
+  --mj-color-heading: var(--mj-ink);
+  --mj-color-heading-brand: var(--mj-teal);    /* display/H1/figures >=24px */
+  --mj-color-heading-brand-h2: var(--mj-teal); /* teal-700 below 960px (H2 < 24px there) */
+  --mj-color-body: var(--mj-text);
+  --mj-color-muted: var(--mj-muted);
+  --mj-color-primary: var(--mj-teal-700);
+  --mj-color-primary-hover: var(--mj-ink);
+  --mj-color-on-primary: var(--mj-white);
+  --mj-color-accent: var(--mj-orange);
+  --mj-color-focus-inner: var(--mj-white);    /* double ring: inner */
+  --mj-color-focus-outer: var(--mj-ink);      /* double ring: outer */
+  --mj-color-danger: var(--mj-red);
+  --mj-color-disabled-bg: var(--mj-line);
+  --mj-color-disabled-text: var(--mj-muted);   /* 3.97: exempt as disabled only */
+  /* print colour roles (v1.1: teal <18pt is teal-700) */
+  --mj-color-print-h1: var(--mj-teal-700);
+  --mj-color-print-h1-numeral: var(--mj-teal);
+  --mj-color-print-h2: var(--mj-teal-700);
+  --mj-color-page-number: var(--mj-teal-700);
+
+  /* ---- Notices: icon + title required; left border decorative ---- */
+  --mj-notice-info-bg: var(--mj-tint-info);
+  --mj-notice-info-border: var(--mj-teal);
+  --mj-notice-info-icon: var(--mj-teal-700);
+  --mj-notice-warn-bg: var(--mj-tint-warn);
+  --mj-notice-warn-border: var(--mj-ochre);    /* decorative */
+  --mj-notice-warn-icon: var(--mj-brown);
+  --mj-notice-error-bg: var(--mj-tint-error);
+  --mj-notice-error-border: var(--mj-red);
+  --mj-notice-error-icon: var(--mj-red);
+  --mj-notice-text: var(--mj-ink);
+
+  /* ---- Charts: series order, 2px white gaps, direct labels always ---- */
+  --mj-chart-1: var(--mj-teal);
+  --mj-chart-2: var(--mj-teal-700);
+  --mj-chart-3: var(--mj-ink);
+  --mj-chart-4: var(--mj-muted);
+  --mj-chart-gap-color: var(--mj-white);
+  --mj-chart-milestone: var(--mj-orange);      /* one labelled milestone only */
+
+  /* ---- Font families and weights ---- */
+  --mj-font-display: "Michroma", "Michroma Fallback", Arial, sans-serif;
+  --mj-font-body: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mj-weight-regular: 400;
+  --mj-weight-medium: 500;
+  --mj-weight-semibold: 600;
+  --mj-weight-bold: 700; /* totals and prices in tables only (Inter, tabular) */
+
+  /* ---- Web type scale. >=640px: fluid, exact specs value at 640 (mobile) and 1200 (desktop) ---- */
+  --mj-size-display: clamp(2rem, 0.857143rem + 2.857143vw, 3rem);
+  --mj-size-h1: clamp(1.75rem, 1.178571rem + 1.428572vw, 2.25rem);
+  --mj-size-h2: clamp(1.375rem, 0.946428rem + 1.071429vw, 1.75rem);
+  --mj-size-h3: 1.25rem;
+  --mj-size-h4: 1.125rem;
+  --mj-size-lead: 1.25rem;
+  --mj-size-body: 1rem;
+  --mj-size-small: 0.875rem;
+  --mj-size-eyebrow: 0.75rem;
+  --mj-size-button: 1rem;
+  --mj-size-figure: 2.5rem;
+  --mj-size-tag: 0.75rem;
+  --mj-size-min: 0.583125rem;           /* 9.33px absolute floor, any family */
+  --mj-size-min-ui: 0.75rem;            /* 12px UI text in practice; Michroma caps floor */
+  --mj-size-michroma-mixed-min: 1.25rem; /* 20px: mixed-case Michroma floor */
+  --mj-leading-display: 1.2;
+  --mj-leading-h1: 1.25;
+  --mj-leading-h2: 1.3;
+  --mj-leading-h3: 1.4;
+  --mj-leading-h4: 1.4444;
+  --mj-leading-lead: 1.6;
+  --mj-leading-body: 1.625;
+  --mj-leading-small: 1.5;
+  --mj-leading-eyebrow: 1.3333;
+  --mj-leading-button: 1.5;
+  --mj-leading-figure: 1.1;
+  --mj-tracking-heading: 0em;
+  --mj-tracking-eyebrow: 0.12em;
+  --mj-tracking-eyebrow-print: 0.14em;
+  --mj-tracking-tag: 0.08em;
+  --mj-tracking-wordmark: 0.05em;
+  --mj-measure: 680px;
+
+  /* ---- Print type scale (US Letter, pt) ---- */
+  --mj-print-size-display: 30pt;  --mj-print-leading-display: 37pt;
+  --mj-print-size-h1: 15pt;       --mj-print-leading-h1: 18pt;
+  --mj-print-size-h1-numeral: 22pt;
+  --mj-print-size-figure: 26pt;   --mj-print-leading-figure: 30pt;
+  --mj-print-size-h2: 11pt;       --mj-print-leading-h2: 15pt; /* Inter 600 */
+  --mj-print-size-h3: 10pt;       --mj-print-leading-h3: 14pt;
+  --mj-print-size-lead: 12pt;     --mj-print-leading-lead: 18pt;
+  --mj-print-size-body: 10pt;     --mj-print-leading-body: 15.5pt;
+  --mj-print-paragraph-gap: 9pt;
+  --mj-print-size-small: 8.5pt;   --mj-print-leading-small: 12.5pt;
+  --mj-print-size-label: 7pt;     --mj-print-leading-label: 10pt;
+  --mj-print-size-footer: 7.5pt;
+  --mj-print-size-page-number: 7.5pt; /* Inter 600 */
+  --mj-print-size-tag: 7pt;
+  --mj-print-size-table-head: 7pt; /* Michroma caps */
+  --mj-print-size-total-min: 10pt; /* Inter 700 tabular */
+  --mj-print-size-total-max: 12pt;
+  --mj-print-size-min: 7pt;
+  --mj-print-size-michroma-mixed-min: 15pt;
+  --mj-print-large-text: 18pt;
+  --mj-print-side-margin: 0.8in;
+  --mj-print-safe-margin: 0.5in;
+  --mj-print-bleed: 0.125in;
+  --mj-print-section-gap: 28pt;
+  --mj-print-card-gap: 0.2in;
+
+  /* ---- Space (4px base) ---- */
+  --mj-space-1: 0.25rem;
+  --mj-space-2: 0.5rem;
+  --mj-space-3: 0.75rem;
+  --mj-space-4: 1rem;
+  --mj-space-5: 1.5rem;
+  --mj-space-6: 2rem;
+  --mj-space-7: 3rem;
+  --mj-space-8: 4rem;
+  --mj-space-9: 6rem;
+  --mj-space-10: 8rem;
+
+  /* ---- Shape (no shadows by spec, except the focus ring) ---- */
+  --mj-radius-sm: 6px;
+  --mj-radius-md: 8px;
+  --mj-radius-full: 999px;
+  --mj-border-width: 1px;
+  --mj-border-width-secondary: 1.5px;
+  --mj-border-width-error: 2px;
+  --mj-border-width-notice: 4px;
+  --mj-focus-width: 2px;
+  --mj-focus-hc-offset: 2px; /* transparent outline offset, for forced-colors */
+  --mj-chart-gap: 2px;
+  --mj-border: 1px solid var(--mj-line);
+  --mj-border-control: 1px solid var(--mj-control);
+  --mj-focus-ring: 0 0 0 2px var(--mj-color-focus-inner), 0 0 0 4px var(--mj-color-focus-outer); /* box-shadow */
+  --mj-focus-outline-hc: 2px solid transparent; /* outline, shows in Windows High Contrast */
+
+  /* ---- Layout ---- */
+  --mj-content-max: 1120px;
+  --mj-columns: 12;
+  --mj-gutter: 24px;
+  --mj-page-pad: 48px;
+}
+
+/* Breakpoints (custom properties can't be used in @media): sm 640px, md 960px, lg 1200px.
+   Below 640px: mobile sizes, pinned exactly. */
+@media (max-width: 639.98px) {
+  :root {
+    --mj-size-display: 2rem;      --mj-leading-display: 1.25;
+    --mj-size-h1: 1.75rem;        --mj-leading-h1: 1.2857;
+    --mj-size-h2: 1.375rem;       --mj-leading-h2: 1.3636;
+    --mj-size-h3: 1.125rem;       --mj-leading-h3: 1.4444;
+    --mj-size-h4: 1rem;           --mj-leading-h4: 1.5;
+    --mj-size-lead: 1.125rem;     --mj-leading-lead: 1.5556;
+    --mj-size-figure: 2rem;       --mj-leading-figure: 1.125;
+    --mj-gutter: 16px;
+    --mj-page-pad: 24px;
+  }
+}
+/* H2 is below 24px (large-text line) until ~828px viewport, so teal-700 up to the 960px breakpoint. */
+@media (max-width: 959.98px) {
+  :root { --mj-color-heading-brand-h2: var(--mj-teal-700); }
+}
+html { font-synthesis: none; }
