@@ -1,5 +1,5 @@
 
-name: Build Knowledge Converter API
+name: Build and Deploy Knowledge Converter API
 
 on:
   workflow_dispatch:
@@ -34,3 +34,33 @@ jobs:
           context: ./backend
           push: true
           tags: ghcr.io/coderdrew/knowledge-converter-api:2ea6cd0
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST_KEY: ${{ secrets.DEPLOY_HOST_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s %s\n' "$HOST" "$HOST_KEY" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy Knowledge Converter
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "$USER@$HOST" \
+            'sudo -n /usr/local/sbin/mindjax-deploy-knowledge-converter 2ea6cd0'
