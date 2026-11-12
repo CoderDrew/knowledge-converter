@@ -1,86 +1,92 @@
-# Deployment plan
+# Deployment
 
-Nothing in this document has been provisioned. It describes what a public demo deployment needs.
+The Knowledge Converter is live at **https://converter.mindjax.com**.
 
-## Target shape
+## How it is deployed
 
 ```
-visitor ──HTTPS──▶ Cloudflare Pages   lab.mindjax.com/knowledge-converter (static export)
+visitor ──HTTPS──▶ Cloudflare Pages      converter.mindjax.com  (static Next.js export)
    │
-   └──HTTPS──▶ Cloudflare proxy (WAF, rate limit, optional Turnstile)
-                   │  Tunnel or IP-allow-listed origin
+   └──HTTPS──▶ Caddy (TLS, reverse proxy) api.mindjax.com        DigitalOcean server
+                   │
                    ▼
-              Python container       api.converter.mindjax.com (FastAPI, 1 instance)
+              Docker container           FastAPI API, 1 instance
+              ghcr.io/coderdrew/knowledge-converter-api:<commit>
 ```
 
 The frontend and API live on **different origins** on purpose: generated previews are served by the API origin, so even a sanitiser bypass could not touch the site's origin.
 
-## Frontend: Cloudflare Pages
+### Frontend: Cloudflare Pages
 
 * Build command: `npm ci && npm run build` (root directory `frontend`)
 * Output directory: `out`
-* Environment variable: `NEXT_PUBLIC_API_BASE_URL=https://api.converter.mindjax.com` (baked in at build time; `scripts/write-headers.mjs` also uses it to write `out/_headers`, the CSP for Pages)
-* Node 20+. No server functions or KV are needed. If the site is mounted under a sub-path of mindjax.com, set Next.js `basePath` accordingly.
+* Environment variable: `NEXT_PUBLIC_API_BASE_URL=https://api.mindjax.com`. It is baked in at build time, and `scripts/write-headers.mjs` uses it to write `out/_headers`, the Content-Security-Policy that Pages applies. The live CSP allows `connect-src`, `img-src` and `frame-src` only to `https://api.mindjax.com`.
+* Node 20+. No server functions or KV.
 
-## API: any Python/container host
+### API: Docker on DigitalOcean
 
-Requirements:
+* **Image:** `backend/Dockerfile` builds a non-root Python 3.12-slim image. The **Build and Deploy Knowledge Converter API** workflow (`.github/workflows/build-api.yml`, run manually) builds it from the commit it runs on and pushes it to GitHub Container Registry as `ghcr.io/coderdrew/knowledge-converter-api:<short-sha>`.
+* **Deploy:** the same workflow connects to the server over SSH with a dedicated deploy key and a pinned host key (`StrictHostKeyChecking=yes`), then runs `sudo -n /usr/local/sbin/mindjax-deploy-knowledge-converter <short-sha>`. That script lives on the server, not in this repository.
+* **Secrets** (GitHub Actions): `DEPLOY_SSH_KEY`, `DEPLOY_HOST_KEY`, `DEPLOY_HOST`, `DEPLOY_USER`. Pushing to the registry uses the built-in `GITHUB_TOKEN`.
+* **Connectivity check:** the **Test Deployment SSH** workflow (`test-deploy-ssh.yml`) only confirms the SSH connection works.
+* **DNS:** `mindjax.com` DNS is on Cloudflare. The `api` record is **DNS-only** (not proxied), so API traffic goes straight to the server and Cloudflare's edge features do not apply to it.
+* **Reverse proxy:** Caddy terminates TLS for `api.mindjax.com` and forwards to the container.
+* **One instance**, because results and the rate limiter are per-process. Scale with `KC_MAX_CONCURRENT` (isolated conversion subprocesses), not more uvicorn workers or containers.
+* Linux is required for the worker's `RLIMIT_AS`/`RLIMIT_CPU` caps to apply.
 
-* Python 3.11+ (container uses 3.12-slim), **Linux recommended** (enables the worker's `RLIMIT_AS`/`RLIMIT_CPU` caps)
-* 1 vCPU / 1–2 GB RAM is ample for `KC_MAX_CONCURRENT=2`
-* Writable ephemeral disk for `KC_WORK_DIR` (results are short-lived; no persistent volume needed)
-* **One instance** (or sticky routing), because results and the rate limiter are per-process
-* Ability to spawn subprocesses (most container platforms allow this)
+### What the live API reports
 
-`backend/Dockerfile` builds a non-root image. It was written but **not yet built**: Docker Desktop's engine wasn't running during development. Build and smoke-test it before the first deployment:
+`GET https://api.mindjax.com/api/health` returns the active limits: 20 MB uploads, `.docx`/`.pptx` only, 60 s conversion timeout, 30-minute result lifetime, and the three output profiles. CORS allows only `https://converter.mindjax.com`.
 
-```bash
-docker build -t knowledge-converter-api backend
-docker run --rm -p 8000:8000 -e KC_ALLOWED_ORIGINS=http://localhost:3000 knowledge-converter-api
-```
+### Environment variables
 
-Suitable low-cost hosts (pick one):
+All API settings are `KC_*` variables (defaults in `backend/api/config.py`).
 
-| Host | Notes | Rough cost for a demo |
+| Variable | Production value | Purpose |
 |---|---|---|
-| Fly.io Machines | Runs the Dockerfile as-is; scale-to-zero with auto-start; pin to 1 machine | ~$0–5/month |
-| Google Cloud Run | `--max-instances=1`, `--memory=2Gi`, `--timeout=120`; `/tmp` is in-memory, so budget RAM for results | Free tier usually covers demo traffic |
-| Render / Railway | Docker web service, 1 instance | ~$7/month |
-| Small VPS + Cloudflare Tunnel | Most control; no inbound ports | ~$5/month |
-
-### Production environment variables
-
-| Variable | Recommended | Purpose |
-|---|---|---|
-| `KC_ALLOWED_ORIGINS` | `https://lab.mindjax.com` | CORS and preview `frame-ancestors` |
+| `KC_ALLOWED_ORIGINS` | `https://converter.mindjax.com` | CORS and preview `frame-ancestors` |
 | `KC_MAX_UPLOAD_MB` | `20` | Upload cap (also shown in the UI) |
-| `KC_MAX_UNCOMPRESSED_MB` | `250` | Zip-bomb ceiling |
+| `KC_MAX_UNCOMPRESSED_MB` | default `250` | Zip-bomb ceiling |
 | `KC_CONVERSION_TIMEOUT_S` | `60` | Worker kill timeout |
-| `KC_MAX_CONCURRENT` | `2` | Parallel isolated workers |
-| `KC_QUEUE_WAIT_S` | `15` | Wait for a slot before 503 |
+| `KC_MAX_CONCURRENT` | default `2` | Parallel isolated workers |
+| `KC_QUEUE_WAIT_S` | default `15` | Wait for a slot before 503 |
 | `KC_RESULT_TTL_S` | `1800` | Result lifetime |
-| `KC_RATE_LIMIT_PER_MINUTE` | `6`–`10` | Per-IP conversions (in-process) |
-| `KC_MEMORY_LIMIT_MB` | `1024` | Worker address-space cap (Linux) |
-| `KC_TRUST_PROXY_HEADERS` | `true` **only** behind Cloudflare with origin locked down | Use `CF-Connecting-IP` for rate limiting |
-| `KC_WORK_DIR` | `/tmp/kc-work` | Ephemeral job storage |
+| `KC_RATE_LIMIT_PER_MINUTE` | default `10` | Conversions per client key per minute (in-process) |
+| `KC_MEMORY_LIMIT_MB` | default `1024` | Worker address-space cap (Linux) |
+| `KC_TRUST_PROXY_HEADERS` | see below | Read the client IP from `CF-Connecting-IP` / `X-Forwarded-For` |
+| `KC_WORK_DIR` | `/tmp/kc-work` (set in the image) | Ephemeral job storage |
 
-## Secure communication
+Values marked "default" are the code defaults. The values above `/api/health` confirms are the upload cap, timeout and result lifetime.
 
-* HTTPS everywhere (Pages and the Cloudflare proxy terminate TLS; use Full (strict) to the origin, or a Tunnel).
-* CORS allows only the Pages origin; the preview `frame-ancestors` is derived from the same list.
-* Lock the origin to Cloudflare (Tunnel preferred) so the edge rate limit and WAF can't be bypassed.
-* Add a Cloudflare rate-limiting rule on `POST /api/conversions` (e.g. 10/min/IP) and a body-size rule matching `KC_MAX_UPLOAD_MB`.
-* Optional: Cloudflare Turnstile token checked by the API before accepting an upload. It isn't implemented; it would be a small addition to `POST /api/conversions`.
+**`KC_TRUST_PROXY_HEADERS` matters behind Caddy.** With it off, every request appears to come from the proxy, so all visitors share one rate-limit bucket. Turn it on only if the container is reachable solely through Caddy, so clients cannot forge the header.
+
+## Deploying a new version
+
+1. Merge to `main`.
+2. In GitHub, run **Build and Deploy Knowledge Converter API** from the Actions tab on `main`.
+3. Confirm the deploy: `curl https://api.mindjax.com/api/health`.
+4. If frontend code changed, redeploy it on Cloudflare Pages. Its build must keep `NEXT_PUBLIC_API_BASE_URL=https://api.mindjax.com`.
+
+To roll back, redeploy an earlier image: the deploy script takes the image tag as its argument.
+
+## Security in production
+
+* HTTPS on both origins: Cloudflare for the site, Caddy for the API.
+* The site's CSP limits network, image and frame access to the API origin. API responses send `default-src 'none'`, `frame-ancestors 'none'`, `nosniff` and `no-referrer`. Previews are served sandboxed from the API origin.
+* CORS allows only the site origin.
+* Uploads are validated, converted in isolated, time-limited worker processes, and deleted on expiry, on request, and whenever the API starts or stops. See [SECURITY.md](SECURITY.md).
+* No Cloudflare WAF or edge rate-limit rules are configured. Rate limiting is the API's in-process limiter.
 
 ## Operating cost
 
-With scale-to-zero hosting, cost is dominated by the API's idle policy: roughly $0–10/month for demo traffic. There are no databases, queues, paid APIs, or persistent storage.
+There are no databases, queues, paid APIs or persistent storage. Cost is the DigitalOcean server, plus Cloudflare Pages and GitHub Container Registry.
 
-## Pre-launch checklist
+## Before scaling further
 
-- [ ] Build and run the Docker image; run `scripts/compare_with_original.py` and the test suite in CI
-- [ ] Set production env vars; confirm `/api/health` limits
-- [ ] Confirm CSP headers on Pages (`curl -I`) and the API preview (`sandbox` present)
-- [ ] Origin reachable only via Cloudflare; edge rate limit active
-- [ ] Replace the placeholder Mindjax mark with the official logo, and review copy
-- [ ] Load-test with a few large decks to tune `KC_MAX_CONCURRENT` and memory
+* **Fix rate limiting behind the proxy.** Confirm the container is reachable only through Caddy, then set `KC_TRUST_PROXY_HEADERS=true`, so the limiter keys on real client IPs instead of the proxy.
+* **Rate-limit at the edge.** Proxy `api.mindjax.com` through Cloudflare, lock the origin to Cloudflare (a Tunnel, or a firewall that allows only Cloudflare IPs), and add a rate-limit rule on `POST /api/conversions` plus a body-size rule matching `KC_MAX_UPLOAD_MB`.
+* **Bot protection.** Add Cloudflare Turnstile, checked by the API before it accepts an upload. Not implemented; a small addition to `POST /api/conversions`.
+* **Automate and gate deploys.** Run the backend tests and `scripts/check_confidential.py` in the workflow before building the image, and tag images by commit so rollbacks are one command.
+* **Monitoring.** Add uptime checks on `/api/health` and alerts for 5xx and 503 (queue full) responses.
+* **More than one instance** would need shared state: move results and the rate limiter to shared storage (for example Redis plus object storage) or use sticky routing.
+* **Load-test** with large decks to tune `KC_MAX_CONCURRENT`, `KC_MEMORY_LIMIT_MB` and the server size.

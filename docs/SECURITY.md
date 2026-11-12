@@ -24,9 +24,9 @@ Each control below is implemented and has an automated test unless marked otherw
 | Confidential sample material in the repo | Samples are generated from scratch by `backend/scripts/generate_samples.py` and carry a marker; `scripts/check_confidential.py` (pre-commit hook in `.githooks/`) blocks other Office/PDF/mail files, images that aren't sample images, and hashed blocked terms in text, ZIP members and binary metadata; `.gitignore` excludes Office files outside `backend/samples/sample-*` | `scripts/check_confidential.py`, `.githooks/pre-commit`, `.gitignore` | `test_repository_hygiene.py` |
 | Frontend | Static export; `_headers` CSP restricts connect/img/frame sources to the API origin; `object-src 'none'`, `frame-ancestors 'none'` | `frontend/scripts/write-headers.mjs` | Checked in the browser against the production build |
 
-## Before a public deployment
+## Open items for the public deployment
 
-These are planned or partial, and must be in place before the app goes public:
+The service is live (see [DEPLOYMENT.md](DEPLOYMENT.md)). These are planned or partial, and not in place yet:
 
 1. **Edge rate limiting.** The in-process limiter only protects one instance. Add a Cloudflare rate-limiting rule on `POST /api/conversions`, and consider Cloudflare Turnstile before upload.
 2. **Trusted client IPs.** Behind Cloudflare, set `KC_TRUST_PROXY_HEADERS=true` and make sure the origin accepts traffic **only** from Cloudflare (Cloudflare Tunnel, or a firewall on Cloudflare IP ranges). Otherwise `CF-Connecting-IP` can be spoofed.

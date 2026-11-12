@@ -2,11 +2,13 @@
 
 Turn Word (.docx) and PowerPoint (.pptx) files into clean, publish-ready HTML, with every embedded image extracted and a portable export package, in a few seconds. A Mindjax Innovation Lab project.
 
+**Live:** https://converter.mindjax.com
+
 * **Engine** (`backend/knowledge_engine`): a standalone Python library. It validates Office packages, reads them into a format-neutral document model, and renders output profiles.
 * **API** (`backend/api`): FastAPI. Isolated, time-limited conversion workers; upload limits; rate limiting; automatic deletion.
 * **Web app** (`frontend`): Next.js + TypeScript + Tailwind, exported as a static site.
 
-Docs: [Audit of the original app](docs/AUDIT.md) · [Architecture](docs/ARCHITECTURE.md) · [Security](docs/SECURITY.md) · [Deployment plan](docs/DEPLOYMENT.md)
+Docs: [Audit of the original app](docs/AUDIT.md) · [Architecture](docs/ARCHITECTURE.md) · [Security](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md)
 
 ## Run locally
 
@@ -73,7 +75,7 @@ cd backend
 .venv/Scripts/python -m pytest
 ```
 
-97 tests cover DOCX/PPTX semantics, images, tables and lists, formatting, HTML generation, sanitisation, ZIP integrity (every reference resolves), invalid/corrupted/disguised/macro/encrypted files, zip bombs, path traversal, XXE, oversized and streamed uploads, rate limiting, temp-file cleanup and expiry, preview CSP headers, and process isolation (a real spawned worker, timeout kill, crash).
+104 tests cover DOCX/PPTX semantics, images, tables and lists, formatting, HTML generation, sanitisation, ZIP integrity (every reference resolves), invalid/corrupted/disguised/macro/encrypted files, zip bombs, path traversal, XXE, oversized and streamed uploads, rate limiting, temp-file cleanup and expiry, preview CSP headers, and process isolation (a real spawned worker, timeout kill, crash).
 
 Regression check against the original application (read-only import of its converter):
 
@@ -104,5 +106,4 @@ The web app reads `NEXT_PUBLIC_API_BASE_URL` (default `http://127.0.0.1:8000`).
 
 * The header mark is a placeholder; swap in the official Mindjax logo before showcasing.
 * Results are kept only in a temporary directory and are deleted on expiry, on request, and whenever the API starts or stops.
-
-* Live deployment enabled.
+* Deployed at https://converter.mindjax.com (frontend on Cloudflare Pages, API on DigitalOcean). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
